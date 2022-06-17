@@ -1,0 +1,30 @@
+{
+  "name": "controid-bot",
+  "version": "1.0.0",
+  "description": "Controid' Multipurpose discord moderation bot.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon index.js"
+  },
+  "keywords": [],
+  "author": "Professor#5166",
+  "license": "ISC",
+  "engines": {
+    "node": "16.x"
+  },
+  "dependencies": {
+    "@discordjs/builders": "^0.7.0",
+    "discord.js": "^13.8.0",
+    "dotenv": "^16.0.1",
+    "fs": "^0.0.1-security",
+    "moment": "^2.29.3",
+    "nekos.life": "^3.0.0",
+    "node-fetch": "^2.6.7",
+    "random-puppy": "^1.1.0"
+  },
+  "devDependencies": {
+    "chalk": "^4.1.2",
+    "nodemon": "^2.0.16"
+  }
+}

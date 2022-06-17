@@ -1,0 +1,8 @@
+{
+  "owner": "628269010362040321",
+  "client_id": "963478965945769995",
+  "urls": {
+    "botInviteLink": "https://discord.com/api/oauth2/authorize?client_id=963478965945769995&permissions=8&scope=bot%20applications.commands",
+    "github": "https://github.com/professor-2390/controid/"
+  }
+}
