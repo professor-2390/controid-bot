@@ -30,7 +30,7 @@ npm install
 
 ## Configuration
 
-- Rename [`.env.example`](https://github.com/professor-2390/controid-bot/blob/master/.env.example) to `.env` and fill the token and other values. Extend config.json according to your needs!
+- Rename [`.env.example`](https://github.com/professor-2390/controid-bot/blob/master/.env.example) to `.env` and fill the token and other values. Extend .env according to your needs!
 
 ## Author
 
