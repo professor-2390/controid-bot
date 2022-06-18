@@ -15,10 +15,13 @@
   },
   "dependencies": {
     "@discordjs/builders": "^0.7.0",
+    "@keyv/mongo": "^1.2.3",
     "discord.js": "^13.8.0",
     "dotenv": "^16.0.1",
     "fs": "^0.0.1-security",
+    "keyv": "^4.3.0",
     "moment": "^2.29.3",
+    "mongodb": "^3.7.3",
     "nekos.life": "^3.0.0",
     "node-fetch": "^2.6.7",
     "random-puppy": "^1.1.0"
