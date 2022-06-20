@@ -1,3 +1,5 @@
+<img src="./assets/repo-banner.jpg"/>
+
 <h1 align="center">Welcome to Project Controid 👋</h1>
 <p>
   <img alt="Version" src="https://img.shields.io/badge/version-v1.0-blue.svg?cacheSeconds=2592000" />
@@ -22,29 +24,28 @@
 
 `Controid` Focuses on the best user experience other than other discord bots(_sudobot, voidbot_) it makes it easy to users to use it. I have a lot future planning to implement in the bot, I only work on this bot when i get the time to so please consider staring the repository to show some support.
 
-## Install
+## 💻 Install
 
 ```sh
 npm install
 ```
 
-## Configuration
+## 🔌 Configuration
 
 - Rename [`.env.example`](https://github.com/professor-2390/controid-bot/blob/master/.env.example) to `.env` and fill the token and other values. Extend .env according to your needs!
 
-## Author
+## 👤 Author
 
-👤 **Professor 2390**
-
-- Twitter: [@professor2390](https://twitter.com/namanvrati) [inactive]
-- Instagram: [@professor_2390](https://www.instagram.com/professor_2390/)
-- Github: [@professor2390](https://github.com/professor2390)
+- 👤 **Professor 2390**
+  - Twitter: [@professor2390](https://twitter.com/namanvrati) *[inactive]*
+  - Instagram: [@professor_2390](https://www.instagram.com/professor_2390/)
+  - Github: [@professor2390](https://github.com/professor2390)
 
 ## 🤝 Contributing
 
 Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/professor-2390/controid-bot/issues)
 
-## ⭐Show your support
+## ⭐ Show your support
 
 Give a ⭐️ if this project helped you! Star-ring the project gives me encouragement to continue it.
 Thanks a lot.
