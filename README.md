@@ -20,7 +20,7 @@
 
 `Controid` Discord Bot is an open source discord.js based bot template. It is classic javascript, not requiring any heavy or a lot of dependencies.
 
-`Controid` Focuses on the best user experience other than other discord bots(_sudobot, voidbot_) it makes it easy to users to use it. I have alot future planning to implement in the bot so please consider staring the repository.
+`Controid` Focuses on the best user experience other than other discord bots(_sudobot, voidbot_) it makes it easy to users to use it. I have a lot future planning to implement in the bot, I only work on this bot when i get the time to so please consider staring the repository to show some support.
 
 ## Install
 
