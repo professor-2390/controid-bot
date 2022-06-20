@@ -1,4 +1,4 @@
-<img src="./assets/repo-banner.jpg"/>
+<img src="./Assets/repo-banner.jpg"/>
 
 <h1 align="center">Welcome to Project Controid 👋</h1>
 <p>
