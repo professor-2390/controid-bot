@@ -7,7 +7,13 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon index.js"
   },
-  "keywords": [],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/professor-2390/controid-bot.git"
+  },
+  "keywords": [
+    "discord-js", "discord-bot"
+  ],
   "author": "Professor#5166",
   "license": "ISC",
   "engines": {
@@ -20,6 +26,7 @@
     "dotenv": "^16.0.1",
     "fs": "^0.0.1-security",
     "keyv": "^4.3.0",
+    "lerna-changelog": "^2.2.0",
     "moment": "^2.29.3",
     "mongodb": "^3.7.3",
     "nekos.life": "^3.0.0",
