@@ -1,17 +1,17 @@
 const { MessageEmbed } = require("discord.js");
-const { SlashCommandBuilder } = require("@discordjs/builders");
 const { getRoleColor } = require("../../Utils/getRoleColor");
 
 module.exports = {
-  data: new SlashCommandBuilder()
-    .setName("avatar")
-    .setDescription(`Displays the avatar of a user.`)
-    .addUserOption((option) =>
-      option
-        .setName("user")
-        .setDescription("The user you want to view the avatar of.")
-    ),
-  execute(interaction) {
+  name: "avatar",
+  description: "Displays avatar of a user.",
+  options: [
+    {
+      name: "user",
+      description: "Select yhr user you want to view avatar of",
+      type: "USER"
+    }
+  ],
+  async execute(interaction) {
     const user = interaction.options.getUser("user");
     let color = getRoleColor(interaction.guild);
     let avatarEmbed;

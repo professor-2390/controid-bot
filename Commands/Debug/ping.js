@@ -1,18 +1,21 @@
-const { SlashCommandBuilder } = require("@discordjs/builders");
+require("../../Events/Client/ready")
+const { Client, MessageEmbed } = require("discord.js");
 
 module.exports = {
-  data: new SlashCommandBuilder()
-    .setName("ping")
-    .setDescription(`Displays the bot's current latency in ms.`),
-  async execute(interaction) {
-    let msg = await interaction.reply({
-      content: "Pinging...",
-      fetchReply: true,
-    });
-    interaction.editReply(
-      `Response Latency: ${Math.floor(
-        msg.createdTimestamp - interaction.createdTimestamp
-      )} ms`
-    );
+  name: "ping",
+  description: "Displays the bot's current status.",
+  /**
+   * 
+   * @param {Client} client 
+   * @param {CommandInteraction} interaction 
+   */
+  async execute(interaction, client) {
+    const Embed = new MessageEmbed()
+      .setColor("WHITE")
+      .setDescription(
+        `**Client**: \`🟢 ONLINE\` - \`${client?.ws?.ping || 'undefined'}ms\`\n **Uptime**: <t:${parseInt(client.readyTimestamp / 1000)}:R>`
+      );
+
+      interaction.reply({embeds: [Embed]})
   },
 };

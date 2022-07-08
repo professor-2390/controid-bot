@@ -1,41 +1,78 @@
-const { MessageEmbed } = require("discord.js");
-const { SlashCommandBuilder } = require("@discordjs/builders");
+const { CommandInteraction, MessageEmbed } = require("discord.js");
 
 module.exports = {
-  data: new SlashCommandBuilder()
-    .setName("clear")
-    .setDescription(`Bulk deletes a certain amount of messages.`)
-    .addIntegerOption((option) =>
-      option
-        .setName("amount")
-        .setDescription(`The number of messages you want to delete.`)
-        .setRequired(true)
-    ),
-  requiredPerms: ["MANAGE_MESSAGES"],
-  botRequiredPerms: ["MANAGE_MESSAGES"],
+  name: "clear",
+  description: "Deletes a specified number of messages",
+  permission: "MANAGE_MESSAGES",
+  options: [
+    {
+      name: "amount",
+      description: "Select the amount messages to delete",
+      type: "NUMBER",
+      required: true,
+    },
+    {
+      name: "target",
+      description: "Select a target to clear their messages",
+      type: "USER",
+      required: false,
+    },
+  ],
+  /**
+   *
+   * @param {CommandInteraction} interaction
+   */
   async execute(interaction) {
-    let amount = interaction.options.get("amount").value;
+    const { channel, options } = interaction;
 
-    if (amount < 2 || amount > 100) {
-      return interaction.reply({
-        content: `You must enter a number higher than 1 and less than 100.`,
-        ephemeral: true,
+    const Amount = options.getNumber("amount");
+    const Target = options.getUser("target");
+
+    const Messages = await channel.messages.fetch();
+
+    const Response = new MessageEmbed().setColor("LUMINOUS_VIVID_PINK");
+
+    if (Target) {
+      let i = 0;
+      const filtered = [];
+      (await Messages).filter((m) => {
+        if (m.author.id === Target.id && Amount > i) {
+          filtered.push(m);
+          i++;
+        }
+      });
+
+      await channel.bulkDelete(filtered, true).then((messages) => {
+        Response.setDescription(
+          `🧹 Cleared ${messages.size} messages from ${Target}`
+        );
+        return interaction
+          .reply({
+            embeds: [Response],
+            fetchReply: true,
+          })
+          .then((m) => {
+            setTimeout(() => {
+              m.delete();
+            }, 5 * 1000);
+          })
+          .catch(() => {});
+      });
+    } else {
+      await channel.bulkDelete(Amount, true).then((messages) => {
+        Response.setDescription(`🧹 Cleared ${messages.size} messages`);
+        return interaction
+          .reply({
+            embeds: [Response],
+            fetchReply: true,
+          })
+          .then((m) => {
+            setTimeout(() => {
+              m.delete();
+            }, 5 * 1000);
+          })
+          .catch(() => {});
       });
     }
-
-    await interaction.channel.bulkDelete(amount, true);
-    const clearEmbed = new MessageEmbed()
-      .setTitle(`Cleared Messages`)
-      .addFields(
-        { name: "Cleared by:", value: `${interaction.member.user.username}` },
-        { name: "Amount of Messages Deleted:", value: `${amount}` },
-        { name: "Channel:", value: `${interaction.channel.name}` }
-      );
-    interaction.reply({
-      embeds: [clearEmbed],
-    });
-    // .catch((error) => {
-    //   return console.log(`${error}`);
-    // });
   },
 };
