@@ -1,209 +1,224 @@
 const { CommandInteraction, MessageEmbed, Client } = require("discord.js");
-const util = require("../../Utils/util.js");
+const chalk = require("chalk");
 const genius = require("genius-lyrics");
 const gClient = new genius.Client();
 
 module.exports = {
-    name: "music",
-    description: "A complete music system",
-    public: true,
-    options: [
+  name: "music",
+  description: "A complete music system",
+  public: true,
+  options: [
+    {
+      name: "play",
+      description: "Play a song.",
+      type: "SUB_COMMAND",
+      options: [
         {
-            name: "play",
-            description: "Plays a song.",
-            type: "SUB_COMMAND",
-            options: [{ name: "query", description: "Provide the name of the song or URL.", type: "STRING", required: true }]
+          name: "query",
+          description: "Provide a name or url for the song.",
+          type: "STRING",
+          required: true,
         },
+      ],
+    },
+    {
+      name: "volume",
+      description: "Alter the volume.",
+      type: "SUB_COMMAND",
+      options: [
         {
-            name: "volume",
-            description: "Alter the volume.",
-            type: "SUB_COMMAND",
-            options: [{ name: "percent", description: "10 = 10%", type: "NUMBER", required: true }]
+          name: "percent",
+          description: "10 = 10%",
+          type: "NUMBER",
+          required: true,
         },
+      ],
+    },
+    {
+      name: "settings",
+      description: "Select an option.",
+      type: "SUB_COMMAND",
+      options: [
         {
-            name: "settings",
-            description: "Select an option.",
-            type: "SUB_COMMAND",
-            options: [{
-                name: "options", description: "Select an option.", type: "STRING", required: true,
-                choices: [
-                    { name: "🔹| View Queue", value: "queue" },
-                    { name: "🔹| Skip", value: "skip" },
-                    { name: "🔹| Pause", value: "pause" },
-                    { name: "🔹| Resume", value: "resume" },
-                    { name: "🔹| Stop", value: "stop" },
-                    { name: "🔹| Lyrics", value: "lyrics"},
-                    { name: "🔹| Shuffle", value: "shuffle" },
-                    { name: "🔹| Now Playing", value: "nowplaying" },
-                ]
-            }],
+          name: "options",
+          description: "Select an option.",
+          type: "STRING",
+          required: true,
+          choices: [
+            { name: "📃 View Queue", value: "queue" },
+            { name: "⏭ Skip Song", value: "skip" },
+            { name: "⏸ Pause Song", value: "pause" },
+            { name: "⏩ Resume Song", value: "resume" },
+            { name: "⏹ Stop Music", value: "stop" },
+            { name: "🔀 Shuffle Queue", value: "shuffle" },
+            { name: "🔃 Toggle Autoplay Mode", value: "AutoPlay" },
+            { name: "⏺ Add a Related Song", value: "RelatedSong" },
+            { name: "🔁 Toggle Repeat Mode", value: "RepeatMode" },
+          ],
+        },
+      ],
+    },
+  ],
+  /**
+   * @param {CommandInteraction} interaction
+   * @param {Client} client
+   */
+  async execute(interaction, client) {
+    const { options, member, guild, channel } = interaction;
+    const VoiceChannel = member.voice.channel;
+
+    if (!VoiceChannel)
+      return await interaction.reply({
+        content: "You must be in a voice channel to be able to play music!",
+        ephemeral: true,
+      });
+
+    if (
+      guild.me.voice.channelId &&
+      VoiceChannel.id !== guild.me.voice.channelId
+    )
+      return await interaction.reply({
+        content: `I'm already playing music in <#${guild.me.voice.channelId}>.`,
+        ephemeral: true,
+      });
+
+    try {
+      switch (options.getSubcommand()) {
+        case "play": {
+          client.distube.play(VoiceChannel, options.getString("query"), {
+            textChannel: channel,
+            member: member,
+          });
+          await interaction.reply("🎼 Added to queue");
         }
-    ],
-    /**
-    * @param {CommandInteraction} interaction 
-    * @param {Client} client 
-    */
-    async execute(interaction, client) {
-        const { options, member, guild } = interaction;
-        const VoiceChannel = member.voice.channel;
+        case "volume": {
+          const Volume = options.getNumber("percent");
+          if (Volume > 100 || Volume < 1) {
+            return await interaction.reply({
+              embeds: [
+                new MessageEmbed().setDescription(
+                  "You have to specify a number between 1 and 100."
+                ),
+              ],
+            });
+          }
+          client.distube.setVolume(VoiceChannel, Volume);
+          return await interaction.reply({
+            embeds: [
+              new MessageEmbed().setDescription(
+                `📶 Volume has been set to \`${Volume}%\``
+              ),
+            ],
+          });
+        }
+        case "settings": {
+          const queue = await client.distube.getQueue(VoiceChannel);
 
-        if (!VoiceChannel)
-            return interaction.reply({ content: "You aren't in a voice channel. Join one to be able to play music!", ephemeral: true });
-
-        if (guild.me.voice.channelId && VoiceChannel.id !== guild.me.voice.channelId)
-            return interaction.reply({ content: `I'm already playing music in <#${guild.me.voice.channelId}>.`, ephemeral: true });
-
-        const player = client.manager.create({
-            guild: interaction.guild.id,
-            voiceChannel: member.voice.channel.id,
-            textChannel: interaction.channelId,
-            selfDeafen: true
-        });
-
-        let res;
-        try {
-            switch (options.getSubcommand()) {
-                case "play": {
-                    const query = interaction.options.getString("query");
-                    res = await player.search(query, interaction.user.username);
-
-                    if (res.loadType === "LOAD_FAILED") {
-                        if (!player.queue.current) player.destroy();
-                        return interaction.reply({ content: "🔹 | An error has occured while trying to add this song." })
-                    }
-
-                    if (res.loadType === "NO_MATCHES") {
-                        if (!player.queue.current) player.destroy();
-                        return interaction.reply({ content: "🔹 | No results found." })
-                    }
-
-                    if (res.loadType === "PLAYLIST_LOADED") {
-                        player.connect();
-                        player.queue.add(res.tracks);
-                        if (!player.playing && !player.paused && player.queue.totalSize === res.tracks.length) player.play();
-                        const playlistEmbed = new MessageEmbed()
-                            .setDescription(`🔹 | **[${res.playlist.name}](${query})** has been added to the queue.`)
-                            .addField("Enqueued", `\`${res.tracks.length}\` tracks`)
-                        return interaction.reply({ embeds: [playlistEmbed] })
-                    }
-
-                    if (res.loadType === "TRACK_LOADED" || res.loadType === "SEARCH_RESULT") {
-                        player.connect();
-                        player.queue.add(res.tracks[0]);
-                    }
-
-                    const enqueueEmbed = new MessageEmbed()
-                        .setColor("BLURPLE")
-                        .setDescription(`Enqueued **[${res.tracks[0].title}](${res.tracks[0].uri})** [${member}]`)
-                    await interaction.reply({ embeds: [enqueueEmbed] });
-
-                    if (!player.playing && !player.paused && !player.queue.size) player.play()
-
-                    if (player.queue.totalSize > 1)
-                        enqueueEmbed.addField("Position in queue", `${player.queue.size - 0}`);
-                    return interaction.editReply({ embeds: [enqueueEmbed] })
-                }
-                case "volume": {
-                    const volume = options.getNumber("percent");
-                    if (!player.playing) return interaction.reply({ content: "There is nothing in the queue." })
-                    if (volume < 0 || volume > 100) return interaction.reply({ content: `You can only set the volume from 0 to 100.` })
-                    player.setVolume(volume);
-
-                    const volumeEmbed = new MessageEmbed()
-                        .setColor("BLURPLE")
-                        .setDescription(`🔹 | Volume has been set to **${player.volume}%**.`)
-                    return interaction.reply({ embeds: [volumeEmbed] })
-                }
-                case "settings": {
-                    switch (options.getString("options")) {
-                        case "skip": {
-                            if (!player.playing) return interaction.reply({ content: "There is nothing in the queue." })
-                            await player.stop();
-
-                            const skipEmbed = new MessageEmbed()
-                                .setColor("BLURPLE")
-                                .setDescription(`🔹 | Skipped.`)
-
-                            return interaction.reply({ embeds: [skipEmbed] });
-                        }
-                        case "nowplaying": {
-                            const track = player.queue.current;
-
-                            const npEmbed = new MessageEmbed()
-                                .setColor("BLURPLE")
-                                .setTitle("Now Playing")
-                                .setDescription(`[${track.title}](${track.uri}) [${player.queue.current.requester}]`)
-                            return interaction.reply({ embeds: [npEmbed] })
-                        }
-                        case "pause": {
-                            if (!player.playing) return interaction.reply({ content: "There is nothing in the queue." })
-
-                            await player.pause(true);
-
-                            const pauseEmbed = new MessageEmbed()
-                                .setColor("BLURPLE")
-                                .setDescription("🔹 | Paused.")
-                            return interaction.reply({ embeds: [pauseEmbed] })
-                        }
-                        case "resume": {
-                            await player.pause(false);
-
-                            const resumeEmbed = new MessageEmbed()
-                                .setColor("BLURPLE")
-                                .setDescription("🔹 | Resumed.")
-                            return interaction.reply({ embeds: [resumeEmbed] })
-                        }
-                        case "stop": {
-                            player.destroy()
-
-                            const disconnectEmbed = new MessageEmbed()
-                                .setColor("BLURPLE")
-                                .setDescription("🔹 | Disconnected.")
-                            return interaction.reply({ embeds: [disconnectEmbed] })
-                        }
-                        case "lyrics": {
-                            const track = player.queue.current;
-                            const trackTitle = track.title.replace("(Official Video)", "").replace("(Official Audio)", "");              
-                            const actualTrack = await gClient.songs.search(trackTitle);
-                            const searches = actualTrack[0];
-                            const lyrics = await searches.lyrics();
-
-                            const lyricsEmbed = new MessageEmbed()
-                                .setColor("BLURPLE")
-                                .setTitle(`🔹 | Lyrics for **${trackTitle}**`)
-                                .setDescription(`${lyrics.toString()}`)
-                            return interaction.reply({ embeds: [lyricsEmbed] })     
-                        }
-                        case "shuffle": {
-                            if (!player.playing) return interaction.reply({ content: "There is nothing in the queue." });
-                            if (!player.queue.length) return interaction.reply({ content: "There is nothing in the queue." });
-
-                            player.queue.shuffle()
-
-                            const shuffleEmbed = new MessageEmbed()
-                                .setColor("BLURPLE")
-                                .setDescription("🔹 | Shuffled the queue.")
-                            return interaction.reply({ embeds: [shuffleEmbed] })
-                        }
-                        case "queue": {
-                            if (!player.playing) return interaction.reply({ content: "There is nothing in the queue." });
-                            if (!player.queue.length) return interaction.reply({ content: "There is nothing in the queue." });
-
-                            const queue = player.queue.map((t, i) => `\`${++i}.\` **${t.title}** [${t.requester}]`);
-                            const chunked = util.chunk(queue, 10).map(x => x.join("\n"));
-
-                            const queueEmbed = new MessageEmbed()
-                                .setColor("BLURPLE")
-                                .setTitle(`Current queue for ${guild.name}`)
-                                .setDescription(chunked[0])
-
-                            return interaction.reply({ embeds: [queueEmbed] });
-                        }
-                    }
-                }
+          if (!queue)
+            return await interaction.reply({
+              embeds: [
+                new MessageEmbed().setDescription(
+                  "❌ The queue is current empty."
+                ),
+              ],
+            });
+          switch (options.getString("options")) {
+            case "skip": {
+              await queue.skip(VoiceChannel);
+              return await interaction.reply({
+                embeds: [
+                  new MessageEmbed().setDescription("⏭ Song has been skipped."),
+                ],
+              });
             }
-        } catch (e) {
-            console.log(e)
+            case "pause": {
+              await queue.pause(VoiceChannel);
+              return await interaction.reply({
+                embeds: [
+                  new MessageEmbed().setDescription("⏸ Song has been paused."),
+                ],
+              });            }
+            case "resume": {
+              await queue.resume(VoiceChannel);
+              return await interaction.reply({
+                embeds: [
+                  new MessageEmbed().setDescription("⏭ Song has been resumed."),
+                ],
+              });
+            }
+            case "shuffle": {
+              await queue.shuffle(VoiceChannel);
+              return await interaction.reply({
+                embeds: [
+                  new MessageEmbed().setDescription(
+                    "🔀 The queue has been shuffled."
+                  ),
+                ],
+              });
+            }
+            case "RelatedSong": {
+              await queue.addRelatedSong(VoiceChannel);
+              return await interaction.reply({
+                embeds: [
+                  new MessageEmbed().setDescription(
+                    "🈁 A related song has been added to the queue."
+                  ),
+                ],
+              });
+            }
+            case "AutoPlay": {
+              let Mode = await queue.toggleAutoplay(VoiceChannel);
+              return await interaction.reply({
+                embeds: [
+                  new MessageEmbed().setDescription(
+                    `🔁 Autoplay mode is set to: ${Mode ? "On" : "Off"}`
+                  ),
+                ],
+              });
+            }
+            case "RepeatMode": {
+              let Mode2 = await queue.setRepeatMode(queue);
+              return await interaction.reply({
+                embeds: [
+                  new MessageEmbed().setDescription(
+                    `🔁 Repeat mode is set to: ${(Mode2 = Mode2
+                      ? Mode2 == 2
+                        ? "Queue"
+                        : "Song"
+                      : "Off")}`
+                  ),
+                ],
+              });
+            }
+            case "stop": {
+              await queue.stop(VoiceChannel);
+              return await interaction.reply({
+                embeds: [
+                  new MessageEmbed().setDescription(
+                    "⏹ Music has been stopped."
+                  ),
+                ],
+              });
+            }
+            case "queue": {
+              return await interaction.reply({
+                embeds: [
+                  new MessageEmbed().setDescription(
+                    `${queue.songs.map(
+                      (song, id) =>
+                        `\n**${id + 1}**. ${song.name} - \`${
+                          song.formattedDuration
+                        }\``
+                    )}`
+                  ),
+                ],
+              });
+            }
+          }
         }
+      }
+    } catch (e) {
+      console.log(chalk.red(e));
     }
-}
+  },
+};
