@@ -9,9 +9,6 @@
   <a href="https://github.com/professor-2390/controid-bot/graphs/commit-activity" target="_blank">
     <img alt="Maintenance" src="https://img.shields.io/badge/Maintained%3F-yes-green.svg" />
   </a>
-  <a href="https://twitter.com/professor2390" target="_blank"></a>
-    <img alt="Twitter: professor2390" src="https://img.shields.io/twitter/follow/professor2390?color=white&logo=twitter&style=plastic" />
-  </a>
 </p>
 
 > An **open source** `discord.js` bot which is based on official discord.js guide includes moderation, music & fun commands!
@@ -37,7 +34,6 @@ npm install
 ## 👤 Author
 
 - 👤 **Professor 2390**
-  - Twitter: [@professor2390](https://twitter.com/namanvrati) *[inactive]*
   - Instagram: [@professor_2390](https://www.instagram.com/professor_2390/)
   - Github: [@professor2390](https://github.com/professor2390)
 

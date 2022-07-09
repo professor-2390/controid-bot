@@ -1,36 +1,41 @@
-const { MessageEmbed } = require('discord.js');
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const { getRoleColor } = require('../../Utils/getRoleColor');
-const client = require('nekos.life');
-const neko = new client();
+const { MessageEmbed } = require("discord.js");
+const builder = require("nekos.life");
+const neko = new builder();
 
 module.exports = {
-  data: new SlashCommandBuilder()
-    .setName('owoify')
-    .setDescription(`Owoifys text.`)
-    .addStringOption((option) => option
-      .setName('text')
-      .setDescription('The text you want to owoify.')
-      .setRequired(true)
-    ),
-  async execute(interaction) {
-    const text = interaction.options.getString('text');
+  name: "owoify",
+  description: "Owoifys text.",
+  options: [
+    {
+      name: "text",
+      description: "The text you want to owoify.",
+      type: "STRING",
+      required: true,
+    },
+  ],
+  /**
+   *
+   * @param {Client} client
+   * @param {CommandInteraction} interaction
+   */
+  async execute(interaction, client) {
+    const text = interaction.options.getString("text");
 
-    if (text.length > 200) return message.channel.send(`I can't owoify your text, it is over 200 characters long!`)
+    if (text.length > 200)
+      return message.channel.send(
+        `I can't owoify your text, it is over 200 characters long!`
+      );
 
-    let color = getRoleColor(interaction.guild);
-    
-    let owo = await neko.OwOify({text: text});
-
+    let owo = await neko.OwOify({ text: text });
 
     const defineEmbed = new MessageEmbed()
-      .setColor(color)
+      .setColor("RANDOM")
       .setTitle(`Owoify`)
       .addFields(
-        { name: 'Text', value: '```' + text + '```' },
-        { name: 'Owoified', value: '```' + owo.owo + '```' }
+        { name: "Text", value: "```" + text + "```" },
+        { name: "Owoified", value: "```" + owo.owo + "```" }
       )
       .setTimestamp();
     interaction.reply({ embeds: [defineEmbed] });
-  }
-}
+  },
+};
