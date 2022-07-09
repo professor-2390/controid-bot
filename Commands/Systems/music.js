@@ -137,7 +137,8 @@ module.exports = {
                 embeds: [
                   new MessageEmbed().setDescription("⏸ Song has been paused."),
                 ],
-              });            }
+              });
+            }
             case "resume": {
               await queue.resume(VoiceChannel);
               return await interaction.reply({
@@ -215,6 +216,7 @@ module.exports = {
               });
             }
           }
+          return;
         }
       }
     } catch (e) {
