@@ -1,6 +1,9 @@
 <img src="./Assets/repo-banner.jpg"/>
 
-<h1 align="center">Welcome to Project Controid 👋</h1>
+<h1>Project Controid</h1>
+
+*Revamp your Discord server. Moderation, ticket management, member greeting, auto-moderation, music and more, all in one easy-to-use, feature-rich, and bug-free Discord bot!*
+
 <p>
   <img alt="Version" src="https://img.shields.io/badge/version-v1.5.0-blue.svg?cacheSeconds=2592000" />
   <a href="https://github.com/professor-2390/controid-bot#readme" target="_blank">
