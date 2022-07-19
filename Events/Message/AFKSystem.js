@@ -9,13 +9,14 @@ module.exports = {
    */
   async execute(message) {
     if (message.author.bot) return;
+    if (message.channel.type === 'dm' || !message.guild) return;
 
     DB.findOne(
       { GuildID: message.guild.id, UserID: message.author.id },
       async (err, data) => {
         if (err) throw err;
         if (data) {
-          if (data.UserID == message.author.id) {
+          if (data.UserID === message.author.id) {
             await DB.deleteOne({
               GuildID: message.guild.id,
               UserID: message.author.id,
