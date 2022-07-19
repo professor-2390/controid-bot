@@ -2,7 +2,7 @@
 
 <h1 align="center">Welcome to Project Controid 👋</h1>
 <p>
-  <img alt="Version" src="https://img.shields.io/badge/version-v1.0-blue.svg?cacheSeconds=2592000" />
+  <img alt="Version" src="https://img.shields.io/badge/version-v1.5.0-blue.svg?cacheSeconds=2592000" />
   <a href="https://github.com/professor-2390/controid-bot#readme" target="_blank">
     <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg" />
   </a>
