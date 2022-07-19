@@ -9,6 +9,7 @@ const PG = promisify(glob);
 const Ascii = require("ascii-table");
 
 client.commands = new Collection();
+client.buttons = new Collection();
 
 const { DisTube } = require('distube')
 const { SpotifyPlugin } = require('@distube/spotify')
@@ -28,7 +29,7 @@ client.distube = new DisTube(client, {
 });
 module.exports = client;
 
-["Events", "Commands"].forEach((handler) => {
+["Events", "Commands", "Buttons"].forEach((handler) => {
   require(`./Handlers/${handler}`)(client, PG, Ascii);
 });
 
