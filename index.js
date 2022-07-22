@@ -11,23 +11,25 @@ const Ascii = require("ascii-table");
 client.commands = new Collection();
 client.buttons = new Collection();
 
-const { DisTube } = require('distube')
-const { SpotifyPlugin } = require('@distube/spotify')
+const { DisTube } = require("distube");
+const { SpotifyPlugin } = require("@distube/spotify");
 
 client.distube = new DisTube(client, {
-  emitNewSongOnly:true,
-  leaveOnFinish:true,
-  emitAddSongWhenCreatingQueue:false,
+  emitNewSongOnly: true,
+  leaveOnFinish: true,
+  emitAddSongWhenCreatingQueue: false,
   plugins: [
     new SpotifyPlugin({
       api: {
         clientId: process.env.spotifyClientID,
-        clientSecret: process.env.spotifyClientSecret
+        clientSecret: process.env.spotifyClientSecret,
       },
-    })
-  ]
+    }),
+  ],
 });
 module.exports = client;
+
+require("./Systems/GiveawaySystem")(client);
 
 ["Events", "Commands", "Buttons"].forEach((handler) => {
   require(`./Handlers/${handler}`)(client, PG, Ascii);
