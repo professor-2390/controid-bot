@@ -1,3 +1,4 @@
+# ***NOTE:*** *The current version of the bot only supports discord.js version **14** I've been updating the bot in the dev branch but some things have changed since version 14 please be patient I'm currently working on the new version. If you want the last updated version it is in the dev branch. Thank you!*
 <img src="./Assets/repo-banner.jpg"/>
 
 <h1 align="center">Welcome to Project Controid 👋</h1>
