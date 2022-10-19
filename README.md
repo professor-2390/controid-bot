@@ -1,4 +1,4 @@
-# ***NOTE:*** *The current version of the bot only supports discord.js version **14** I've been updating the bot in the dev branch but some things have changed since version 14 please be patient I'm currently working on the new version. If you want the last updated version it is in the dev branch. Thank you!*
+# ***⚠ WARNING:*** *The current version of the bot only supports discord.js version **13** I've been updating the bot in the dev branch but some things have changed since version 14 but I've decided to **no logner work on this project.** I'm currently working on the new version on a new bot. If you want the last updated version it is in the dev branch. To stay updated please join https://discord.gg/T7QeqCqFrw & add **Professor#5166** Thank you for your support!*
 <img src="./Assets/repo-banner.jpg"/>
 
 <h1 align="center">Welcome to Project Controid 👋</h1>
